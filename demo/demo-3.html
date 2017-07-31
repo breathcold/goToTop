@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>回到顶部</title>
+	<script src="https://cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+	<style>
+		.container {width:980px;margin:0 auto;height:auto;min-height:100%;position:relative;}    
+		.content {height: 2000px;border: 1px solid red;}    
+		#goToTop {position: fixed;bottom: 20px;right: 10%;}  
+		#goToTop a {background: none repeat scroll 0 0 #336699; border: 1px solid #CCCCCC; border-radius: 3px; -webkit-border-radius: 3px; color: #FF9966; font-size: 14px; padding: 5px; text-decoration: none; text-shadow: 0 1px 0 #999; -webkit-text-shadow: 0 1px 0 #999;}
+	</style>
+</head>
+<body>
+
+	<div class="container">
+	    <div class="header"> 我是头部</div>
+	    <div class="content">我是主内容，高度是2000px</div>
+	    <div class="footer">我是在最底部</div>
+	    <div id="goToTop" style="display: none;"><a href="#">点我回到页面顶部</a></div>
+	 </div>
+	
+
+	<script>
+		//尝试一下用插件的写法
+		/**
+		 * [goToTop description]
+		 * @param  {[object]} options [用户重新定义的参数]
+		 * @return {[type]}         [description]
+		 */
+		$.fn.goToTop = function(options){
+			var _this   = this,
+				options = $.extend({
+					min : 1, //设置距离顶部最小值
+					fadeSpeed : 200,//渐变速度
+					ieOffset : 50, //处理ie兼容问题
+					speed : "slow"
+				},options);
+			return _this.each(function() {
+				var el = $(this);
+				el.css('display', 'none');//防止用户忘记
+				$(window).scroll(function(){
+					//ie hack    有抖动情况
+					/*if(!jQuery.support.hrefNormalized){
+						el.css({
+							position: 'absolute',
+							top: $(window).scrollTop()+$(window).height()-options.ieOffset
+						});
+					}*/
+					if($(this).scrollTop()>options.min){
+						$(_this).fadeIn(options.fadeSpeed)
+					}else{
+						$(_this).fadeOut(options.fadeSpeed)
+					}
+				})
+				el.on('click', function(event) {
+					$('html,body').animate({scrollTop: 0}, options.speed);
+					return false;
+				});	
+			});		
+		}
+
+		/*调用这个方法*/
+		$(document).ready(function() {
+			$("#goToTop").goToTop({});//可传可不传
+		});
+	</script>
+</body>
+</html>
